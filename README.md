@@ -1,58 +1,56 @@
-# Quick Commerce ETL Pipeline v2
+# Quick Commerce ETL Pipeline — v2 (PostgreSQL + Data Validation)
 
-An upgraded data engineering project that builds a production-style ETL pipeline
-with PostgreSQL and data validation using a Quick Commerce dataset from Kaggle.
-
----
-
-## What's New in v2
-
-| Feature | v1 | v2 |
-|---------|----|----|
-| Database | SQLite | PostgreSQL |
-| Data Validation | None | 5 quality checks |
-| Pipeline Steps | 3 | 4 |
+## Overview
+An upgraded ETL pipeline that migrates from SQLite to **PostgreSQL** and adds a **data validation layer** with 5 quality checks before loading 947,752 quick commerce orders into the database.
 
 ---
 
-## Project Overview
+## About the Dataset
+This dataset is a **synthetic yet realistic simulation** of Quick Commerce (Q-Commerce) business data with nearly **1 Million Records**, inspired by popular platforms such as:
 
-This project simulates a real-world data engineering workflow:
+**Blinkit, Zepto, Swiggy Instamart, Dunzo, JioMart, BigBasket, Amazon Now, and Flipkart Minutes**
 
-- Extract data from Kaggle (947,752 orders)
-- Validate data quality before loading
-- Transform it into a star schema data model
-- Load it into a PostgreSQL database
+It is designed for learners, analysts, and data science enthusiasts who want to practice real-world data analytics workflows using Python, Pandas, and data visualization tools.
+
+**Source:** [Kaggle — Quick Commerce Dataset by Rohit Grewal](https://www.kaggle.com/datasets/rohitgrewal/quick-commerce-dataset)
 
 ---
 
 ## Tech Stack
+- **Language:** Python 3.13
+- **Database:** PostgreSQL 18
+- **Libraries:** Pandas, SQLAlchemy, psycopg2
+- **Environment:** Windows
 
-- Python
-- Pandas
-- PostgreSQL
-- SQLAlchemy
-- psycopg2
-- Kaggle API
+---
+
+## Project Structure
+```
+quick-commerce-pipeline-v2/
+├── db_connect.py     ← PostgreSQL connection
+├── extract.py        ← loads data from Kaggle
+├── validate.py       ← 5 data quality checks
+├── transform.py      ← builds star schema
+├── load.py           ← saves to PostgreSQL
+└── pipeline.py       ← runs full ETL
+```
 
 ---
 
 ## Data Validation Checks
+All 5 checks passed on 947,752 rows:
 
-Before loading, the pipeline runs 5 quality checks:
-
-1. No null values in critical columns (Order_ID, Order_Value, Delivery_Time_Min, Distance_Km)
-2. Order value must be positive
-3. Delivery time must be between 1 and 120 mins
-4. Customer rating must be between 1 and 5
-5. No duplicate Order IDs
-
-If any check fails, the pipeline stops before loading bad data.
+| Check | Description |
+|-------|-------------|
+| No nulls | Critical columns have no missing values |
+| Positive order values | All order values are greater than 0 |
+| Valid delivery time | Delivery time between 1-120 minutes |
+| Valid ratings | Customer ratings between 1-5 |
+| No duplicates | No duplicate Order IDs |
 
 ---
 
-## Data Model (Star Schema)
-
+## Star Schema
 ```
 fact_orders
 ├── dim_customers
@@ -63,44 +61,15 @@ fact_orders
 ---
 
 ## How to Run
-
-1. Clone the repo
-   ```bash
-   git clone https://github.com/JoemarDeVera/quick-commerce-pipeline-v2.git
-   cd quick-commerce-pipeline-v2
-   ```
-
-2. Install dependencies
-   ```bash
-   pip install kagglehub pandas sqlalchemy psycopg2-binary
-   ```
-
-3. Set up PostgreSQL
-   - Install PostgreSQL
-   - Create a database called `quick_commerce`
-   - Update the connection string in `db_connect.py`
-
-4. Run the pipeline
-   ```bash
-   python pipeline.py
-   ```
-
----
-
-## Project Structure
-
-```
-quick-commerce-pipeline-v2/
-├── db_connect.py     - PostgreSQL connection
-├── extract.py        - Pull data from Kaggle
-├── validate.py       - Data quality checks
-├── transform.py      - Clean and model into star schema
-├── load.py           - Load into PostgreSQL
-└── pipeline.py       - Run full ETL pipeline
-```
+1. Install PostgreSQL and create database `quick_commerce`
+2. Update `db_connect.py` with your credentials
+3. Install dependencies: `pip install pandas sqlalchemy psycopg2-binary kagglehub`
+4. Run pipeline: `python pipeline.py`
 
 ---
 
 ## Related Projects
-
 - [v1 - SQLite Pipeline](https://github.com/JoemarDeVera/quick-commerce-pipeline)
+- [v3 - Apache Airflow](https://github.com/JoemarDeVera/quick-commerce-pipeline-v3)
+- [v4 - dbt Transformations](https://github.com/JoemarDeVera/quick-commerce-pipeline-v4)
+- [v5 - Power BI Dashboard](https://github.com/JoemarDeVera/quick-commerce-pipeline-v5)
